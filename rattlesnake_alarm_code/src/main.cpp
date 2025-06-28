@@ -35,11 +35,11 @@ bool motorStarted = false;
 
 bool alarmActive = false;
 unsigned long alarmStartTime = 0;
-const int alarmDuration = 5000; // 3 seconds
+const int alarmDuration = 5000; // 5 seconds
 unsigned long lastFlashTime = 0;
 
 unsigned long motorRunStartTime = 0;
-const unsigned long MAX_MOTOR_RUN_TIME = 15000; // 5 seconds max safety limit
+const unsigned long MAX_MOTOR_RUN_TIME = 15000; // 15 seconds max safety limit
 
 enum IncrementMode { INCREMENT_MIN, INCREMENT_SEC };
 IncrementMode currentMode = INCREMENT_MIN;
@@ -169,14 +169,14 @@ void readEncoder() {
       encoderPosition = 0;
     }
 
-        // Trigger appropriate blinking mode
+/*         // Trigger appropriate blinking mode
     if (currentMode == INCREMENT_MIN) {
       timer.triggerBlink(BLINK_MINUTES);
       Serial.println("Blinking minutes");
     } else {
       timer.triggerBlink(BLINK_SECONDS);
       Serial.println("Blinking seconds");
-    }
+    } */
 
     encoderMoved = false;
   }
@@ -187,7 +187,7 @@ void handleAlarm() {
   unsigned long elapsedTime = now - alarmStartTime;
 
   if (!motorStarted) {
-    float ASHER_MOTOR_PERCENT = 0.25;
+    float ASHER_MOTOR_PERCENT = 0.30;
     analogWrite(MOT_IN1, (int)(1023 * ASHER_MOTOR_PERCENT)); 
     digitalWrite(MOT_IN2, LOW);
     motorStarted = true;

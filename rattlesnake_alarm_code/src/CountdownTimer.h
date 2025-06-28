@@ -40,7 +40,7 @@ class CountdownTimer {
     static const unsigned long BLINK_TIMEOUT = 3000;     // 3 seconds
     static const unsigned long BLINK_PERIOD = 500;       // 0.5 seconds
     static const unsigned long BLINK_ON_TIME = 400;      // 80% of 500ms = 400ms
-    static const unsigned long BLINK_OFF_TIME = 100;     // 20% of 500ms = 100ms
+    static const unsigned long BLINK_OFF_TIME = 1;     // 20% of 500ms = 100ms
     
     void showTimePrivate(int seconds);
     void updateBlinking();
