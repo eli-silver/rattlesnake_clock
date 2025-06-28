@@ -4,18 +4,54 @@
 #include "Switch.h"
 #include "SerialCommands.h"
 
+
 // Snake animation frames
-const uint8_t snakeFrames[] = {
-  0b00000001, // Segment A
-  0b00000010, // Segment B
-  0b00000100, // Segment C
-  0b00001000, // Segment D
-  0b00010000, // Segment E
-  0b00100000, // Segment F
-  0b01000000, // Segment G
+// Figure-8 snake animation - 4 segments tracing a figure-8 pattern
+// Path: Top→Right→Middle-Left→Down→Bottom-Right→Up→Middle-Left→repeat
+// 24 positions for smooth figure-8 motion
+const uint8_t figure8Frames[][4] = {
+  // Upper loop - going right across top
+  {0b00000001, 0b00000000, 0b00000000, 0b00000000}, // Position 0: A,-,-,-
+  {0b00000001, 0b00000001, 0b00000000, 0b00000000}, // Position 1: A,A,-,-
+  {0b00000001, 0b00000001, 0b00000001, 0b00000000}, // Position 2: A,A,A,-
+  {0b00000001, 0b00000001, 0b00000001, 0b00000001}, // Position 3: A,A,A,A
+  
+  // Going down right side
+  {0b00000000, 0b00000001, 0b00000001, 0b00000011}, // Position 4: -,A,A,A+B
+  {0b00000000, 0b00000000, 0b00000001, 0b01000110}, // Position 5: -,-,A,A+B+G
+  {0b00000000, 0b00000000, 0b00000000, 0b01000110}, // Position 6: -,-,-,B+G
+  
+  // Crossing middle going left
+  {0b00000000, 0b00000000, 0b01000000, 0b01000110}, // Position 7: -,-,G,B+G
+  {0b00000000, 0b01000000, 0b01000000, 0b01000000}, // Position 8: -,G,G,G
+  {0b01000000, 0b01000000, 0b01000000, 0b00000000}, // Position 9: G,G,G,-
+  
+  // Going down left side
+  {0b01010000, 0b01000000, 0b00000000, 0b00000000}, // Position 10: G+E,G,-,-
+  {0b00011000, 0b00000000, 0b00000000, 0b00000000}, // Position 11: D+E,-,-,-
+  
+  // Lower loop - going right across bottom
+  {0b00011000, 0b00001000, 0b00000000, 0b00000000}, // Position 12: D+E,D,-,-
+  {0b00001000, 0b00001000, 0b00001000, 0b00000000}, // Position 13: D,D,D,-
+  {0b00000000, 0b00001000, 0b00001000, 0b00001000}, // Position 14: -,D,D,D
+  {0b00000000, 0b00000000, 0b00001000, 0b00001100}, // Position 15: -,-,D,D+C
+  
+  // Going up right side
+  {0b00000000, 0b00000000, 0b00000000, 0b01001100}, // Position 16: -,-,-,C+D+G
+  {0b00000000, 0b00000000, 0b01000000, 0b01000100}, // Position 17: -,-,G,G+C
+  {0b00000000, 0b01000000, 0b01000000, 0b01000000}, // Position 18: -,G,G,G
+  
+  // Crossing middle going left (repeat of middle cross)
+  {0b01000000, 0b01000000, 0b01000000, 0b00000000}, // Position 19: G,G,G,-
+  {0b01000000, 0b01000000, 0b00000000, 0b00000000}, // Position 20: G,G,-,-
+  {0b01000000, 0b00000000, 0b00000000, 0b00000000}, // Position 21: G,-,-,-
+  
+  // Going up left side to complete figure-8
+  {0b01100000, 0b00000000, 0b00000000, 0b00000000}, // Position 22: F+G,-,-,-
+  {0b00100001, 0b00000000, 0b00000000, 0b00000000}  // Position 23: F+A,-,-,- (leads back to pos 0)
 };
-const int numSnakeFrames = sizeof(snakeFrames) / sizeof(snakeFrames[0]);
-int snakeIndex = 0;
+const int numFigure8Frames = sizeof(figure8Frames) / sizeof(figure8Frames[0]);
+int figure8Index = 0;
 
 // Pin definitions
 #define LED_PIN 25
@@ -187,6 +223,7 @@ void handleAlarm() {
   unsigned long elapsedTime = now - alarmStartTime;
 
   if (!motorStarted) {
+<<<<<<< Updated upstream
     float ASHER_MOTOR_PERCENT = 0.30;
     analogWrite(MOT_IN1, (int)(1023 * ASHER_MOTOR_PERCENT)); 
     digitalWrite(MOT_IN2, LOW);
@@ -197,13 +234,14 @@ void handleAlarm() {
     Serial.println(alarmStartTime + alarmDuration);
   }
 
-  // Snake animation
-  if (now - lastFlashTime >= 250) {
+  // Figure-8 animation - 4 segments tracing figure-8 pattern
+  if (now - lastFlashTime >= 140) {  // Smooth animation timing
     lastFlashTime = now;
-    uint8_t frame = snakeFrames[snakeIndex];
-    uint8_t segments[] = {frame, frame, frame, frame};
-    display.setSegments(segments);
-    snakeIndex = (snakeIndex + 1) % numSnakeFrames;
+    
+    // Set all 4 digits with the current frame
+    display.setSegments(figure8Frames[figure8Index], 4, 0);
+    
+    figure8Index = (figure8Index + 1) % numFigure8Frames;
     
     Serial.print("Alarm elapsed: ");
     Serial.print(elapsedTime);
@@ -219,7 +257,6 @@ void handleAlarm() {
     stopAlarm();
   }
 }
-
 void stopAlarm() {
   Serial.println("in StopAlarm");
   alarmActive = false;
