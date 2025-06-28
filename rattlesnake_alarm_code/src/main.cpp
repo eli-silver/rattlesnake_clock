@@ -35,11 +35,11 @@ bool motorStarted = false;
 
 bool alarmActive = false;
 unsigned long alarmStartTime = 0;
-const int alarmDuration = 3000; // 3 seconds
+const int alarmDuration = 5000; // 3 seconds
 unsigned long lastFlashTime = 0;
 
 unsigned long motorRunStartTime = 0;
-const unsigned long MAX_MOTOR_RUN_TIME = 5000; // 5 seconds max safety limit
+const unsigned long MAX_MOTOR_RUN_TIME = 15000; // 5 seconds max safety limit
 
 enum IncrementMode { INCREMENT_MIN, INCREMENT_SEC };
 IncrementMode currentMode = INCREMENT_MIN;
