@@ -57,7 +57,7 @@ void stopAlarm();
 void handleAlarm();
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   pinMode(LED_PIN, OUTPUT);
   pinMode(MOT_IN1, OUTPUT);
@@ -177,7 +177,7 @@ void readEncoder() {
       timer.triggerBlink(BLINK_SECONDS);
       Serial.println("Blinking seconds");
     }
-    
+
     encoderMoved = false;
   }
 }
@@ -187,8 +187,8 @@ void handleAlarm() {
   unsigned long elapsedTime = now - alarmStartTime;
 
   if (!motorStarted) {
-    float ASHER_MOTOR_PERCENT = 0.55;
-    analogWrite(MOT_IN1, (int)(1024 * ASHER_MOTOR_PERCENT)); 
+    float ASHER_MOTOR_PERCENT = 0.25;
+    analogWrite(MOT_IN1, (int)(1023 * ASHER_MOTOR_PERCENT)); 
     digitalWrite(MOT_IN2, LOW);
     motorStarted = true;
     Serial.print("Motor started at: ");
