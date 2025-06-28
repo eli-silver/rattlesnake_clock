@@ -62,9 +62,9 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "/Users/elisilver/Documents/GitHub/rattlesnake_clock/snake_alarm_code/include",
-                    "/Users/elisilver/Documents/GitHub/rattlesnake_clock/snake_alarm_code/src",
-                    "/Users/elisilver/Documents/GitHub/rattlesnake_clock/snake_alarm_code/.pio/libdeps/pico/TM1637",
+                    "/Users/elisilver/Documents/GitHub/rattlesnake_clock/rattlesnake_alarm_code/include",
+                    "/Users/elisilver/Documents/GitHub/rattlesnake_clock/rattlesnake_alarm_code/src",
+                    "/Users/elisilver/Documents/GitHub/rattlesnake_clock/rattlesnake_alarm_code/.pio/libdeps/pico/TM1637",
                     "/Users/elisilver/.platformio/packages/framework-arduino-mbed/cores/arduino",
                     "/Users/elisilver/.platformio/packages/framework-arduino-mbed/cores/arduino/api/deprecated",
                     "/Users/elisilver/.platformio/packages/framework-arduino-mbed/cores/arduino/api/deprecated-avr-comp",
