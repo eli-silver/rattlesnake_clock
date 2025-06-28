@@ -168,6 +168,16 @@ void readEncoder() {
       timer.incrementTime(-step);
       encoderPosition = 0;
     }
+
+        // Trigger appropriate blinking mode
+    if (currentMode == INCREMENT_MIN) {
+      timer.triggerBlink(BLINK_MINUTES);
+      Serial.println("Blinking minutes");
+    } else {
+      timer.triggerBlink(BLINK_SECONDS);
+      Serial.println("Blinking seconds");
+    }
+    
     encoderMoved = false;
   }
 }
