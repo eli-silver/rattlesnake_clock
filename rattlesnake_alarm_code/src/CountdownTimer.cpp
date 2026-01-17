@@ -45,17 +45,22 @@ void CountdownTimer::setOnFinished(std::function<void()> callback) {
 void CountdownTimer::update() {
   if (is_running) {
     unsigned long now = millis();
+
+    // Update countdown every second
     if (now - last_update_time >= 1000) {
       last_update_time = now;
 
       if (current_seconds > 0) {
         current_seconds--;
-        showTimePrivate(current_seconds);
       } else {
         is_running = false;
         onFinished();
+        return;
       }
     }
+
+    // Always refresh display when running (for HH:MM flashing)
+    showTimePrivate(current_seconds);
   } else {
     // Update blinking when not running
     updateBlinking();
