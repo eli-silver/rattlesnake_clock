@@ -23,6 +23,7 @@ class CountdownTimer {
     bool isRunning();
     int getRemainingTime();
     void showTime(int seconds);
+    void showModeIndicator(char mode_char);
 
   private:
     TM1637Display& display;
@@ -41,6 +42,11 @@ class CountdownTimer {
     static const unsigned long BLINK_PERIOD = 500;       // 0.5 seconds
     static const unsigned long BLINK_ON_TIME = 400;      // 80% of 500ms = 400ms
     static const unsigned long BLINK_OFF_TIME = 1;     // 20% of 500ms = 100ms
+
+    // HH:MM mode flashing (for minutes display)
+    static constexpr float HHMM_FLASH_DUTY_CYCLE = 0.75; // 75% on, 25% off
+    static const unsigned long HHMM_FLASH_PERIOD = 1000; // 1 second period
+    unsigned long last_hhmm_flash_time;
     
     void showTimePrivate(int seconds);
     void updateBlinking();

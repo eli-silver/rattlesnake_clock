@@ -41,8 +41,8 @@ unsigned long lastFlashTime = 0;
 unsigned long motorRunStartTime = 0;
 const unsigned long MAX_MOTOR_RUN_TIME = 15000; // 15 seconds max safety limit
 
-enum IncrementMode { INCREMENT_MIN, INCREMENT_SEC };
-IncrementMode currentMode = INCREMENT_MIN;
+enum IncrementMode { INCREMENT_SEC, INCREMENT_MIN, INCREMENT_HOUR };
+IncrementMode currentMode = INCREMENT_SEC;
 
 // Objects
 TM1637Display display(CLK, DIO);
@@ -159,7 +159,14 @@ void readEncoder() {
   lastEncA = encA;
 
   if (encoderMoved && !timer.isRunning()) {
-    int step = (currentMode == INCREMENT_MIN) ? 60 : 5;
+    int step;
+    if (currentMode == INCREMENT_SEC) {
+      step = 5;        // 5 seconds
+    } else if (currentMode == INCREMENT_MIN) {
+      step = 60;       // 1 minute
+    } else {
+      step = 3600;     // 1 hour
+    }
 
     if (encoderPosition > 0) {
       timer.incrementTime(step);
@@ -188,7 +195,7 @@ void handleAlarm() {
 
   if (!motorStarted) {
     float ASHER_MOTOR_PERCENT = 0.30;
-    analogWrite(MOT_IN1, (int)(1023 * ASHER_MOTOR_PERCENT)); 
+    analogWrite(MOT_IN1, (int)(1023 * ASHER_MOTOR_PERCENT));
     digitalWrite(MOT_IN2, LOW);
     motorStarted = true;
     Serial.print("Motor started at: ");
@@ -237,7 +244,27 @@ void stopAlarm() {
 }
 
 void toggleMode() {
-  currentMode = (currentMode == INCREMENT_MIN) ? INCREMENT_SEC : INCREMENT_MIN;
+  if (currentMode == INCREMENT_SEC) {
+    currentMode = INCREMENT_MIN;
+  } else if (currentMode == INCREMENT_MIN) {
+    currentMode = INCREMENT_HOUR;
+  } else {
+    currentMode = INCREMENT_SEC;
+  }
+
   Serial.print("Mode: ");
-  Serial.println(currentMode == INCREMENT_MIN ? "Minutes" : "Seconds");
+  if (currentMode == INCREMENT_SEC) {
+    Serial.println("Seconds");
+    timer.showModeIndicator('S');
+  } else if (currentMode == INCREMENT_MIN) {
+    Serial.println("Minutes");
+    timer.showModeIndicator('P');
+  } else {
+    Serial.println("Hours");
+    timer.showModeIndicator('H');
+  }
+
+  // Brief delay to show mode indicator, then restore time display
+  delay(800);
+  timer.showTime(timer.getRemainingTime());
 }
